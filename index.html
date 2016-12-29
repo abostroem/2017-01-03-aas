@@ -1,5 +1,6 @@
 ---
 layout: workshop      # DON'T CHANGE THIS.
+root: .               # DON'T CHANGE THIS EITHER.  (THANK YOU.)
 carpentry: "swc"    # what kind of Carpentry (must be either "dc" or "swc")
 venue: "229th AAS Meeting"        # brief name of host site without address (e.g., "Euphoric State University")
 address: "Convention Center; 1501 Gaylord Trail; Grapevine, TX; Room: Appaloosa 1"      # full street address of workshop (e.g., "Room A, 123 Forth Street, Blimingen, Euphoria")
@@ -45,6 +46,7 @@ eventbrite:           # optional: alphanumeric key for Eventbrite registration, 
   scrolling="auto">
 </iframe>
 {% endif %}
+
 
 <h2 id="general">General Information</h2>
 
@@ -150,22 +152,9 @@ eventbrite:           # optional: alphanumeric key for Eventbrite registration, 
 -->
 <p id="contact">
   <strong>Contact</strong>:
-  Please email
-  {% if page.contact %}
-    {% for contact in page.contact %}
-      {% if forloop.last and page.contact.size > 1 %}
-        or
-      {% else %}
-        {% unless forloop.first %}
-        ,
-        {% endunless %}
-      {% endif %}
-      <a href='mailto:{{contact}}'>{{contact}}</a>
-    {% endfor %}
-  {% else %}
-    to-be-announced
-  {% endif %}
-  for more information.
+  Please mail
+  <a href="mailto:{{page.contact}}">{{page.contact}}</a> for more
+  information.
 </p>
 
 <hr/>
