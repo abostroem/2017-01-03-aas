@@ -1,0 +1,331 @@
+Welcome to Software Carpentry Etherpad!
+
+	* This pad is synchronized as you type, so that everyone viewing this page sees the same text. This allows you to collaborate seamlessly on documents.
+	* Use of this service is restricted to members of the Software Carpentry and Data Carpentry community; this is not for general purpose use (for that, try etherpad.wikimedia.org).
+	* Users are expected to follow our code of conduct: http://software-carpentry.org/conduct.html
+	* All content is publicly available under the Creative Commons Attribution License: https://creativecommons.org/licenses/by/4.0/
+
+This Pad:
+*http://bit.ly/2iZ1Vmw
+
+All material covered can be found either in the workshop repository or the SWC lessons website:
+https://software-carpentry.org/lessons/
+https://github.com/abostroem/2017-01-03-aas
+
+Schedule and installation instructions can be found here:
+https://abostroem.github.io/2017-01-03-aas/
+
+
+
+Bash and the shell 
+When using the command line interface, the inputs are being parsed by the shell interpreter, translating the input into machine language instructions.
+
+Bash is useful for running repetitive tasks on many files at once.
+
+Change prompt to a dollar sign
+PS1="$ "
+
+Query your user name
+whoami
+
+Query your current directory
+pwd
+
+List files and directories in directory
+ls
+show directories with a slash
+ls -F 
+show hidden files (that start with a dot)
+ls -a
+show all files/directories with information on ownership/size
+ls -l
+show files sorted by timestamp
+ls -t
+show in reverse alphabetical order
+ls -r
+show in reverse time order
+ls -rt
+ls -ltr is a common combination that shows files in reverse time order and with extra info like read/write/execute permissions, size, creation date, etc.
+show file size in human readable format:
+ls -lh
+
+
+Get help on a command:
+man command
+e.g. man ls
+hit q to exit 
+press spacebar to scroll down and 'b' to scroll up
+
+
+Move between directories:
+cd directory
+Move back one directory:
+cd ../
+Go to your home directory:
+cd 
+or :
+cd ~
+Go to previous directory:
+cd -
+
+Create a new directory:
+    mkdir directoryname
+
+Not recommended to use white spaces in file and directory names. Use dashes or underscores instead. 
+Don't begin file names with dashes either, because the dash confuses the command line. 
+Starting your file name with a dot will cause it to be a hidden file.
+
+Create an empty file:
+    touch filename
+Remove files:
+    rm filename
+Remove a directory:
+    rm -r directoryname
+
+Count number of words, characters, and lines in a file:
+	wc filename
+
+Return just number of lines:
+    wc -l FILE
+        
+Return just number of characters:
+    wc -c FILE
+Return just number of words:
+    wc -w FILE
+
+*Wildcards:
+    * matches any number of characters
+    ? matches one character
+    specify characters within brackets [ ]
+    Test them here: http://www.globtester.com/
+
+To get the files that Iva is using go to this URL:
+    http://swcarpentry.github.io/shell-novice/data/shell-novice-data.zip
+    They are in the data-shell/molecules directory
+
+    if you want your output to be saved in a file use '>' 
+	    e.g., ls > a.txt  will save output of ls into a.txt file 
+
+*Sort
+Sort files by name
+	sort -n filename
+Sort files by name and put them in a file called sorted_lengths.txt
+	sort -n *.pdb > sorted_lengths.txt
+Look at the beginning of a file:
+    head -n  1
+
+*Combining commands:
+Take output of wc and pass it to sort, then pass the output of sort to head
+    wc -l *pdb | sort -n | head -n 1
+    
+    This is called piping after the joining character |
+    
+print an entire file to the screen
+cat filename
+more filename goes top to bottom using space bar
+less filename allows you to go up or down in file, space down, b key up
+
+Variables in bash are assigned in following way:
+e.g., a=3
+to print it type, echo $a
+
+*Repetative tasks: do the same thing to many files
+in the directory: data-shell/creatures/
+wildcards don't work:
+    cp *.dat original-*dat
+    becuase the last entry isn't a directory
+Create a bash loop:
+Print the first 3 lines of a file:
+    
+	for filename in basilisk.dat unicorn.dat
+	do
+	head -n 3 $filename
+	done
+$filename is how your refer to a variable name (that you specified in the first line)
+
+do and done begin and end your loop
+What if you have more than 2 files?
+	for filename in *.dat
+	
+print in the shell: echo
+if you want to see what filename you're working on:
+    for filename in *.dat
+    do 
+    echo $filename
+    head -n 4 $filename
+    done
+
+Other way:
+    
+    for filename in `ls *dat`
+    do
+    echo $filename
+    done
+    
+
+Print the last 5 lines of the first 100 lines:
+	for x in *dat
+	do head -n 100 $x | tail -n 5
+	done
+Copy all files and prepend new to each new filename
+	for filename in *.dat
+	do 
+	cp $filename new-$filename
+	done
+
+History:
+    tells you everything you've typed labeled by line number
+    !linenumber executes that line of history
+    this may be faster than the up arrow depending on how far back you typed your command
+    
+*Shell scripting
+	* save your commands
+	* document what you did
+	* do longer scripts
+	* edit easily
+go to the molecules directory
+cd molecules
+
+We will be using nano as a text editor
+Create a file called middle.sh (.sh is a standard suffix for a shell script)
+	nano middle.sh
+	#print lines 10 through 15 of octane.pdb
+	head -n 15 octane.pdb | tail -n 5
+	control+o to save
+	control+x to exit
+	
+	bash middle.sh
+	
+	nano middle.sh
+	#print lines 10 through 15 of an file that is passed to script
+	head -n 15 "$1" | tail -n 5
+	control+o to save
+	control+x to exit
+	
+	bash middle.sh octane.pdb
+	bash middle.sh pentane.pdb
+	
+	The filename that you pass to the script goes into the variable $1
+	quotes around $1 ensures that if your filename has a space it is interpreted as a single variable as long as the filename is also enclosed in quotes when you call the shell script
+	
+	
+	
+	head -n "$2" "$1" |tail -n "$3"
+	bash middle.sh pentane.pdb 15 5
+	#pentane.pdb is assigned to the variable $1, 15 is assigned to the variable $2, and 5 is assigned to the variable $3
+	
+	library dfits allows you to do shell scripts on fits files looking at the keywords
+	
+	# is a comment in bash (a line that will not be executed)
+	
+	To remove a code chunk or comment a section or skip a portion you may use following code (Reference: https://www.cyberciti.biz/faq/bash-comment-out-multiple-line-code/)
+	
+	: '
+	Your Code
+	'
+	
+	$PATH is an environment variable. Anytime you execute anything it seaches for it in every directory in your $PATH variable
+	$PYTHONPATH is an environment variable where Python searches for directories (it also searches $PATH)
+	
+	To permenantly add a variable:
+	To create a shortcut
+	export GRIZLI=<path>
+	this sets GRIZLI to path
+	
+	To add a directory to your path:
+	export PATH="<directory>:$PATH" 
+	this prepends <directory> to :$PATH
+	
+	Handy cheat sheat: https://github.com/abostroem/2017-01-03-aas/blob/gh-pages/handy_shell_commands.md
+	
+	Bitwise vs Boolean operators: 
+	use and when using booleans (e.g. output is True or False):from StackOverflow:<raw>In theory, and and or come straight from boolean logic (and therefore operate on two booleans to produce a boolean), while & and | apply the boolean and/or to the individual bits of integers. 
+	
+	if (x is not None) and (x is False)
+	
+	if (x < 4) & (x[2]==3)
+	
+	
+	Formatting:
+	https://docs.python.org/3.5/library/string.html#format-examples
+	
+	
+	my_list = [1, 2, 5, 7, 9, 4, 5, 4]
+	#find the total
+	total = 0
+	for num in my_list:
+	    total = total + num
+	#Calc mean
+	mean = total/len(my_list)
+	#Find median
+	sorted_list = sorted(my_list)
+	if len(my_list)%2 == 1:
+	    median_indx = int(len(my_list)/2)
+	    median = sorted_list[median_indx]
+	else:
+	    median_indx = int(len(my_list)/2)
+	    median = (sorted_list[median_indx]+sorted_list[median_indx-1])/2
+	print(mean, median)
+	print(np.mean(np.array(my_list)), np.median(np.array(my_list)))
+	
+	
+	def calc_total(my_list):
+	    total = 0    
+	for num in my_list:
+	        total = total + num
+	    return total
+	def calc_mean(my_list):
+	    total = calc_total(my_list)
+	    mean = total/len(my_list)
+	    return mean
+	def calc_median(my_list):
+	    sorted_list = sorted(my_list)
+	    if len(my_list)%2 == 1:
+	        median_indx = int(len(my_list)/2)
+	        median = sorted_list[median_indx]
+	    else:
+	        median_indx = int(len(my_list)/2)
+	        median = (sorted_list[median_indx]+sorted_list[median_indx-1])/2
+	    return median
+	
+	tbdata = ascii.read('hubble_data.dat', names =  ['galaxy',                                                  'supernova',                                                'm', 'sig_m',                                                 'dist_mod', 'sig_dist_mod',                                                'M', 'sig_M',                                                 'velocity'])
+	
+	
+	Lots of info on getting started with matplotlib (copy and paste to work): 
+	https://github.com/spacetelescope/pylunch/blob/master/4-matplotlib/Intro%20to%20Matplotlib.ipynb
+*Git
+Slideshow: http://slides.com/abostroem/local_version_control#/
+
+See configuration:
+git config --list
+
+mkdir planets
+cd planets
+
+turn planets directory into a git repository
+git init
+
+ls -a
+see .git directory
+
+Show me the last commit:
+	git log -1
+    show history for one file:
+     git log filename
+     show one only line for each commit:
+         git log --oneline
+show only information for the last 5 commits of file FILE
+	git log -5 FILE
+	
+gitignore documentation
+https://git-scm.com/docs/gitignore
+
+	1. Post assessment: https://www.surveymonkey.com/r/swc_post_workshop_v1?workshop_id=2017-01-03-aas
+	
+	2. Write what you liked/found useful in this workshop on the green post-it. Write a suggestion for something we can improve on the red post-it.
+	
+	3. Fill out the AAS survey when you get the link.
+	
+	
+	
+	
